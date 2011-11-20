@@ -2,14 +2,15 @@ import sbt._
 import com.twitter.sbt._
 
 class ScalaJsonProject(info: ProjectInfo) extends StandardProject(info) with SubversionPublisher {
-  val specs = buildScalaVersion match {
-    case "2.7.7" => "org.scala-tools.testing" % "specs" % "1.6.2.1" % "test"
-    case _ =>       "org.scala-tools.testing" % "specs_2.8.1" % "1.6.6" % "test"
-  }
+    
+  val localMaven = Resolver.file("Local Maven repository", new java.io.File(Path.userHome+"/.m2/repository"))
+  val publishTo = localMaven 
+  
+  val specs = "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
 
   override def subversionRepository = Some("http://svn.local.twitter.com/maven-public/")
 
-  override def disableCrossPaths = false
+  // override def disableCrossPaths = false
 
   override def compileOptions = super.compileOptions ++ Seq(Unchecked) ++
     compileOptions("-encoding", "utf8")
